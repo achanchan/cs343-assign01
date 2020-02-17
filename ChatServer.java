@@ -77,4 +77,11 @@ public class ChatServer implements ChatInterface{
 		}
 	}
 
+	/*
+		list() returns a list of all active users.
+	*/
+	public String list() throws RemoteException{
+		return users.toString();
+	}
+
 }

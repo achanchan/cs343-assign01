@@ -35,6 +35,10 @@ public class ChatClient {
                       stub.addClient(split_msg[1]);
                   }
 
+                  else if (split_msg[0].equals("list")){
+                      stub.list();
+                  }
+
               }
 
           } catch (Exception e) {
