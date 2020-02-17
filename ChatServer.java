@@ -7,25 +7,24 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
 import java.util.Scanner;
 
-public class ChatServer extends UnicastRemoteObject implements ChatInterface{
+public class ChatServer implements ChatInterface{
   private Vector<String> users;
   private String name;
 
   //Constructor
-  public ChatServer(String user) throws RemoteException{
+  public ChatServer() throws RemoteException{
 	super();
-	name = user;
     users = new Vector<String>();
   }
 
   public static void main(String args[]) {
 
         try {
-            Scanner s=new Scanner(System.in);
-            System.out.println("Enter your username:");
-	    	String name=s.nextLine().trim();
-			ChatServer chat = new ChatServer(name);
+            // Scanner s=new Scanner(System.in);
+            // System.out.println("Enter your username:");
+	    	// String name=s.nextLine().trim();
 
+			ChatServer chat = new ChatServer();
 			ChatInterface stub = (ChatInterface) UnicastRemoteObject.exportObject(chat, 0);
 
             // Bind the remote object's stub in the registry
@@ -58,7 +57,24 @@ public class ChatServer extends UnicastRemoteObject implements ChatInterface{
         " * send <destination username> <message>: send an IM to a specific user \n" +
         " * quit: close connection to server \n";
 
-        return "Server says hello to " + name + availableFunctions;
+        return "Welcome to the chat server" + name +
+				"! Here is a list of available functions for you to try: \n"
+				+ availableFunctions;
     }
+
+	/*
+		addClient(String username) checks to see if username exists in
+		client vector. If it doesn't, it adds the username to the vector.
+		If it does, it returns an error message to the client.
+	*/
+	public String addClient(String username) throws RemoteException{
+		if (users.contains(username)) {
+			return ("Username already exists. Please retry!");
+		}
+		else {
+			users.add(username);
+			return ("Ok!");
+		}
+	}
 
 }

@@ -5,8 +5,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
+import java.util.Scanner;
 
 public class ChatClient {
+
+
 
   public static void main(String[] args)
     throws MalformedURLException, RemoteException{
@@ -16,13 +19,32 @@ public class ChatClient {
           try {
               Registry registry = LocateRegistry.getRegistry(host);
               ChatInterface stub = (ChatInterface) registry.lookup("Hello");
-              // String response = stub.helloTo();
-              // System.out.println("response: " + response);
+
+              Scanner s = new Scanner(System.in);
+              System.out.println("Enter your name:");
+  	    	  String name =s.nextLine().trim();
+
+              String response = stub.helloTo(name);
+              System.out.println("response: " + response);
+
+              while (true) {
+                  String msg=s.nextLine().trim();
+                  String[] split_msg = msg.split("\\s+");
+
+                  if (split_msg[0].equals("register")){
+                      stub.addClient(split_msg[1]);
+                  }
+
+              }
+
           } catch (Exception e) {
               System.err.println("Client exception: " + e.toString());
               e.printStackTrace();
           }
 
     }
+
+
+
 
 }
