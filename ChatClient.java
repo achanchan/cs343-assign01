@@ -33,7 +33,10 @@ public class ChatClient implements ClientInterface{
 
                   if (split_msg[0].equals("register")){
                       username = split_msg[1];
-                      System.out.println(stub.addClient(username));
+                      ChatClient client = new ChatClient();
+                      ClientInterface clientStub = (ClientInterface) UnicastRemoteObject.exportObject(client, 0);
+           
+                      System.out.println(stub.addClient(username, clientStub));
                   }
 
                   else if (split_msg[0].equals("list")){

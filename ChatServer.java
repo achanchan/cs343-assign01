@@ -1,5 +1,5 @@
 import java.net.MalformedURLException;
-
+import java.nio.channels.AlreadyBoundException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -8,13 +8,15 @@ import java.util.Vector;
 import java.util.Scanner;
 
 public class ChatServer implements ChatInterface{
-  private Vector<User> users;
-  private String name;
+  //private Vector<User> users;
+  private Vector<String> users; 
+  //private String name;
 
   //Constructor
   public ChatServer() throws RemoteException{
 	super();
-    users = new Vector<User>();
+	//users = new Vector<User>();
+	users = new Vector<String>(); 
   }
 
   public static void main(String args[]) {
@@ -33,10 +35,6 @@ public class ChatServer implements ChatInterface{
 
             System.err.println("Server ready");
 
-			// while(true){
-			//
-			//
-			// }
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
@@ -64,16 +62,24 @@ public class ChatServer implements ChatInterface{
 		client vector. If it doesn't, it adds the username to the vector.
 		If it does, it returns an error message to the client.
 	*/
-	public String addClient(String username) throws RemoteException{
+	public String addClient(String username, ClientInterface newClient) throws RemoteException{
+		
+		try{
 		if (users.contains(username)) {
 			return ("Username already exists. Please retry!");
 		}
 		else {
-			// ClientInterface newClient = (ClientInterface) registry.lookup("Client");
-			// User newUser = new User(username, newClient);
-			// users.add(newUser);
+			//User newUser = new User(username, newClient);
+			Registry registry = LocateRegistry.getRegistry();
+			registry.bind(username, newClient);
+			users.add(username);
 			return ("Ok!");
 		}
+	}
+	catch(Exception e){
+		System.err.println("Exception");
+		return (e.toString());	
+	}
 	}
 
 	/*
