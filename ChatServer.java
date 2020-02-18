@@ -75,7 +75,7 @@ public class ChatServer implements ChatInterface{
 			Registry registry = LocateRegistry.getRegistry();
 			registry.bind(username, newClient);
 			users.add(username);
-      String[] names = Naming.list(username);
+			String[] names = Naming.list(username);
 			System.out.println(Arrays.toString(names));
 			return ("Ok!");
 		}
@@ -99,6 +99,11 @@ public class ChatServer implements ChatInterface{
 	public void quit(String username) throws RemoteException{
 		if (users.contains(username)){
 			users.remove(username);
+			
+			Registry registry = LocateRegistry.getRegistry();
+			registry.unbind(username); 
+			String[] names = Naming.list(username);
+			System.out.println(Arrays.toString(names));
 		}
 	}
 
