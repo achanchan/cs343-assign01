@@ -4,19 +4,21 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.rmi.Naming;
 import java.util.Vector;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class ChatServer implements ChatInterface{
   //private Vector<User> users;
-  private Vector<String> users; 
+  private Vector<String> users;
   //private String name;
 
   //Constructor
   public ChatServer() throws RemoteException{
 	super();
 	//users = new Vector<User>();
-	users = new Vector<String>(); 
+	users = new Vector<String>();
   }
 
   public static void main(String args[]) {
@@ -63,7 +65,7 @@ public class ChatServer implements ChatInterface{
 		If it does, it returns an error message to the client.
 	*/
 	public String addClient(String username, ClientInterface newClient) throws RemoteException{
-		
+
 		try{
 		if (users.contains(username)) {
 			return ("Username already exists. Please retry!");
@@ -73,12 +75,14 @@ public class ChatServer implements ChatInterface{
 			Registry registry = LocateRegistry.getRegistry();
 			registry.bind(username, newClient);
 			users.add(username);
+      String[] names = Naming.list(username);
+			System.out.println(Arrays.toString(names));
 			return ("Ok!");
 		}
 	}
 	catch(Exception e){
 		System.err.println("Exception");
-		return (e.toString());	
+		return (e.toString());
 	}
 	}
 
