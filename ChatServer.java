@@ -115,10 +115,11 @@ public class ChatServer implements ChatInterface{
 	public void sendMessage(String start, String dest, String message) throws RemoteException{
 		Registry registry = LocateRegistry.getRegistry();
 
-		if (users.contains(dest)){
+		if (!users.contains(dest)){
 		try{
-			ClientInterface stub = (ClientInterface) registry.lookup(dest);
-			stub.messageFromServer("message from " + start + ": " + message);
+			ClientInterface stub = (ClientInterface) registry.lookup(start);
+			stub.messageFromServer("Unable to send message to " + dest
+															+ ". Please try again!");
 		}
 		catch(Exception e){
 			System.err.println("Exception :" + e.toString());
@@ -126,9 +127,8 @@ public class ChatServer implements ChatInterface{
 	}
 	else {
 		try{
-			ClientInterface stub = (ClientInterface) registry.lookup(start);
-			stub.messageFromServer("Unable to send message to " + dest
-															+ ". Please try again!");
+				ClientInterface stub = (ClientInterface) registry.lookup(dest);
+			  stub.messageFromServer("message from " + start + ": " + message);
 		}
 		catch(Exception e){
 			System.err.println("Exception :" + e.toString());

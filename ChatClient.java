@@ -31,16 +31,15 @@ public class ChatClient implements ClientInterface{
                   String msg=s.nextLine().trim();
                   String[] split_msg = msg.split("\\s+");
 
-                  if (split_msg.length == 1) {
-                      if (split_msg[0].equals("list")){
+
+                  if (split_msg.length == 1 && split_msg[0].equals("list")){
                           System.out.println(stub.list());
                       }
 
-                      else if (split_msg[0].equals("quit")){
+                else if (split_msg.length == 1 && split_msg[0].equals("quit")){
                           stub.quit(username);
                           System.exit(0);
                       }
-                  }
 
                  else if (split_msg.length == 2 && split_msg[0].equals("register")){
                      username = split_msg[1];
