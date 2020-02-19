@@ -8,6 +8,8 @@ import java.rmi.Naming;
 import java.util.Vector;
 import java.util.Scanner;
 import java.util.Arrays;
+import java.rmi.NotBoundException; 
+
 
 public class ChatServer implements ChatInterface{
   //private Vector<User> users;
@@ -99,12 +101,43 @@ public class ChatServer implements ChatInterface{
 	public void quit(String username) throws RemoteException{
 		if (users.contains(username)){
 			users.remove(username);
-			
 			Registry registry = LocateRegistry.getRegistry();
+			try{
 			registry.unbind(username); 
-			String[] names = Naming.list(username);
-			System.out.println(Arrays.toString(names));
+			}
+			catch(NotBoundException e){
+				System.err.println("Exception :" + e.toString());
+			}
+			try{
+				String[] names = Naming.list(username);
+				System.out.println(Arrays.toString(names));
+			}
+			catch(MalformedURLException e){
+				System.err.println("Exception :" + e.toString());
+			}
+			
+			
 		}
+
+	
+	}
+	/*
+		sendMessage(String dest, String message) allows the Server to send a message
+		to a client from another client 
+	*/
+	public void sendMessage(String start, String dest, String message) throws RemoteException{
+		Registry registry = LocateRegistry.getRegistry();
+		try{
+			ClientInterface stub = (ClientInterface) registry.lookup(dest);
+			stub.messageFromServer("message from " + start + ": " + message); 
+		}
+		catch(Exception e){
+			System.err.println("Exception :" + e.toString());
+		}
+		
+		
+
+
 	}
 
 }

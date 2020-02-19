@@ -6,4 +6,5 @@ public interface ChatInterface extends Remote{
   public String addClient(String username, ClientInterface newClient) throws RemoteException;
   public String list() throws RemoteException;
   public void quit(String username) throws RemoteException;
+  public void sendMessage(String start, String dest, String message) throws RemoteException; 
 }

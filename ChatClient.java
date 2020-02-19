@@ -47,6 +47,16 @@ public class ChatClient implements ClientInterface{
                       stub.quit(username);
                       System.exit(0);
                   }
+                  else if (split_msg[0].equals("send")){
+                      String message = "";
+                      for(int i = 2; i<split_msg.length-1; i++){
+                          message+= split_msg[i] + " ";
+
+                      }
+                      message+= split_msg[split_msg.length-1];
+                      
+                      stub.sendMessage(username, split_msg[1], message);
+                  }
 
               }
 
