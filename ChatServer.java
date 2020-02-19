@@ -8,7 +8,7 @@ import java.rmi.Naming;
 import java.util.Vector;
 import java.util.Scanner;
 import java.util.Arrays;
-import java.rmi.NotBoundException; 
+import java.rmi.NotBoundException;
 
 
 public class ChatServer implements ChatInterface{
@@ -57,7 +57,7 @@ public class ChatServer implements ChatInterface{
         " * send <destination username> <message>: send an IM to a specific user \n" +
         " * quit: close connection to server \n";
 
-        return "Welcome to the chat server! Here is a list of available functions for you to try: \n"
+        return "Welcome to the chat server! Here is a list of available commands for you to try: \n"
 				+ availableFunctions;
     }
 
@@ -77,8 +77,6 @@ public class ChatServer implements ChatInterface{
 			Registry registry = LocateRegistry.getRegistry();
 			registry.bind(username, newClient);
 			users.add(username);
-			String[] names = Naming.list(username);
-			System.out.println(Arrays.toString(names));
 			return ("Ok!");
 		}
 	}
@@ -103,39 +101,41 @@ public class ChatServer implements ChatInterface{
 			users.remove(username);
 			Registry registry = LocateRegistry.getRegistry();
 			try{
-			registry.unbind(username); 
+			registry.unbind(username);
 			}
 			catch(NotBoundException e){
 				System.err.println("Exception :" + e.toString());
 			}
-			try{
-				String[] names = Naming.list(username);
-				System.out.println(Arrays.toString(names));
-			}
-			catch(MalformedURLException e){
-				System.err.println("Exception :" + e.toString());
-			}
-			
-			
 		}
-
-	
 	}
 	/*
 		sendMessage(String dest, String message) allows the Server to send a message
-		to a client from another client 
+		to a client from another client
 	*/
 	public void sendMessage(String start, String dest, String message) throws RemoteException{
 		Registry registry = LocateRegistry.getRegistry();
+
+		if (users.contains(dest)){
 		try{
 			ClientInterface stub = (ClientInterface) registry.lookup(dest);
-			stub.messageFromServer("message from " + start + ": " + message); 
+			stub.messageFromServer("message from " + start + ": " + message);
 		}
 		catch(Exception e){
 			System.err.println("Exception :" + e.toString());
 		}
-		
-		
+	}
+	else {
+		try{
+			ClientInterface stub = (ClientInterface) registry.lookup(start);
+			stub.messageFromServer("Unable to send message to " + dest
+															+ ". Please try again!");
+		}
+		catch(Exception e){
+			System.err.println("Exception :" + e.toString());
+		}
+	}
+
+
 
 
 	}
